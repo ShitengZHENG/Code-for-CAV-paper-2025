@@ -44,7 +44,7 @@ for jj=5
     data_Acmd(Idx:end,jj)=data_Acmd(Idx,jj);
     data_Aactual(Idx:end,jj)=data_Aactual(Idx,jj);
 end
-% 里程生成
+% distance
 xstart=f_xnew(-10,1207);
 ystart=f_ynew(-10,1207);
 data_xgnew=f_xnew(data_xg,data_yg);
@@ -89,7 +89,7 @@ fun=str2func(['fun_SimCFpair_Noise']);
 [vdata,xdata,adata_actual]=fun(data_Input,para_AV,paraUpper,LowLevelModel_label,NoiseStrength);
 vdata=vdata(st:et,:);
 xdata=xdata(st:et,:);
-% 偏差分布
+% Deviation
 dx_sim=xdata(:,end-1)-xdata(:,end)-L_veh;
 v_sim=vdata(:,end);
 error_dx=dx_exp-dx_sim;
@@ -107,7 +107,7 @@ for cishu=1:num_cishu
     aActual_noise=adata_actual_noise(:,end);
     simdata_set(cishu,1:3)=[{v_noise},{dx_noise},{aActual_noise}];
 end
-% 置信区间计算
+% CI
 vvv_nj=[];dx_nj=[];
 for cishu=1:num_cishu
     vvv_=simdata_set{cishu,1};
@@ -117,10 +117,10 @@ for cishu=1:num_cishu
 end
 error_dxNoise=dx_nj-dx_sim;
 error_vNoise=vvv_nj-v_sim;
-vdata_lb=prctile(vvv_nj,10,2);
-vdata_ub=prctile(vvv_nj,90,2);
-dx_lb=prctile(dx_nj,10,2);
-dx_ub=prctile(dx_nj,90,2);
+vdata_lb=prctile(vvv_nj,2.5,2);
+vdata_ub=prctile(vvv_nj,97.5,2);
+dx_lb=prctile(dx_nj,2.5,2);
+dx_ub=prctile(dx_nj,97.5,2);
 %------------------------------------------------------------------Paperused_f2-c5
 step=length(v_exp);
 tt=([1:step]-1)*0.05;
@@ -149,3 +149,4 @@ ylabel('Spacing (m)')
 set(gca,'fontname','times new roman','fontsize',16)
 box on
 ylim([3.5 6.8])
+
